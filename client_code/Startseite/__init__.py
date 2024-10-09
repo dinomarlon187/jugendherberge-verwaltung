@@ -13,4 +13,4 @@ class Startseite(StartseiteTemplate):
     
     # Any code you write here will run before the form opens.
 
-    self.drop_down_1.items = anvil.server.call('get_jugendherbergen')
+    self.drop_down_1.items = anvil.server.call('get_jugendherbergen', 'name,JID')
