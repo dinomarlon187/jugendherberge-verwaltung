@@ -21,17 +21,17 @@ def say_hello(name):
 @anvil.server.callable
 def get_jugendherbergen(rows='*'):
 
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
-  res = list(cursor.execute(f'SELECT {rows} FROM jugendherbergen'))
+  res = list(cursor.execute(f'SELECT {rows} FROM tblJugendherberge'))
   print(res)
   return res
 
 @anvil.server.callable
 def get_zimmer_for_jugendherberge(id, columns="*"):
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
-  res = list(cursor.execute(f'SELECT {columns} FROM zimmer WHERE JID = {id}'))
+  res = list(cursor.execute(f'SELECT {columns} FROM tblZimmer WHERE fkJugendherberge = {id}'))
   print(res)
   return res
 
