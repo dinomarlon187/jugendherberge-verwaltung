@@ -66,7 +66,8 @@ components:
     name: label_6
     properties: {text: 'Benutzer:'}
     type: Label
-  - layout_properties: {grid_position: 'IOCNEM,GYQICJ'}
+  - event_bindings: {change: dropdown_User_change}
+    layout_properties: {grid_position: 'IOCNEM,GYQICJ'}
     name: dropdown_User
     properties: {}
     type: DropDown
