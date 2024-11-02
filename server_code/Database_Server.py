@@ -15,11 +15,53 @@ import sqlite3
 #
 
 @anvil.server.callable
-def get_jugendherbergen(rows='*'):
+def get_jugendherbergen():
 
   conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
-  res = list(cursor.execute(f'SELECT {rows} FROM tblJugendherberge'))
+  res = list(cursor.execute('SELECT Name,IDJugendherberge FROM tblJugendherberge'))
   print(res)
   return res
 
+@anvil.server.callable
+def get_all_users():
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
+  cursor = conn.cursor()
+  res = list(cursor.execute(
+      '''
+      SELECT Vorname || " " || Nachname || " " || Email AS label, IDBenutzer
+      FROM tblBenutzer
+      '''
+  ))
+  print(res)
+  return res
+
+@anvil.server.callable
+def get_preiskategorien(UID):
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
+  cursor = conn.cursor()
+  res = list(cursor.execute(
+      '''
+      SELECT Preis || "€" AS label, IDPreiskategorie
+      FROM tblPreiskategorie 
+      WHERE IDPreiskategorie = ?
+      ''', 
+      (UID)
+  ))
+  print(res)
+  return res
+  
+@anvil.server.callable
+def get_zimmer_for_jugendherberge(JID, PK_current):
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
+  cursor = conn.cursor()
+  res = list(cursor.execute(
+      '''
+      SELECT "NR: " || IDZimmer || " Plätze: " || MaxBettenanzahl AS label, IDZimmer 
+      FROM tblZimmer 
+      WHERE fkJugendherberge = ? AND fkPreiskategorie = ?
+      ''', 
+      (JID, PK_current)
+  ))
+  print(res)
+  return res
