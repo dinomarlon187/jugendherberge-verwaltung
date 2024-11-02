@@ -22,7 +22,7 @@ class Startseite(StartseiteTemplate):
 
   def dropdown_jugendherberge_change(self, **event_args):
     """This method is called when an item is selected"""
-    pass
+    print(self.dropdown_jugendherberge.selected_value)
 
   def dropdown_user_change(self, **event_args):
     """This method is called when an item is selected"""
@@ -73,11 +73,11 @@ class Startseite(StartseiteTemplate):
     self.dropdown_preiskategorie.items = data_modify[0]
 
   def load_room(self):
+    print(self.dropdown_jugendherberge.selected_value)
     Jugendherberge_selected = self.transform_index_to_id(self.hostel_id_index_relation, self.dropdown_jugendherberge.selected_value)
     Preiskategorie_selected = self.transform_index_to_id(self.price_id_index_relation, self.dropdown_preiskategorie.selected_value)
     data_list = anvil.server.call('get_zimmer_for_jugendherberge',Jugendherberge_selected, Preiskategorie_selected)
     data_modify = self.data_modify(data_list)
-    self.dropdown_jugendherberge.tag = [1,2,34,5,6,8,9,0]
     self.room_id_index_relation = data_modify[1]
     self.dropdown_zimmer.items = data_modify[0] 
 
