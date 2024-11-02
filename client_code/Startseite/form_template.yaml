@@ -42,10 +42,15 @@ components:
     name: dropdown_mitbucher
     properties: {}
     type: DropDown
-  - layout_properties: {grid_position: 'OTHMHZ,TIZTSO'}
-    name: button_2
+  - event_bindings: {click: button_AddUser_click}
+    layout_properties: {grid_position: 'OTHMHZ,TIZTSO'}
+    name: button_AddUser
     properties: {align: center, text: User hinzufügen}
     type: Button
+  - layout_properties: {grid_position: 'JVQQNH,MPAKCY'}
+    name: flowpanel_additionalUser
+    properties: {}
+    type: FlowPanel
   - layout_properties: {grid_position: 'RUSXWW,MFYLLI'}
     name: button_1
     properties: {text: Buchen}
