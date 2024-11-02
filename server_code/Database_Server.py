@@ -98,12 +98,49 @@ def get_user(ID):
   cursor = conn.cursor()
   res = list(cursor.execute(
     '''
-    SELECT Vorname || " " || Nachname
+    SELECT Vorname || " " || Nachname, IDBenutzer
     FROM tblBenutzer
     WHERE IDBenutzer = ?
     ''', 
     (str(ID))
     ))
   print(res[0][0])
-  return str(res[0][0])
-  
+  return str(res[0][0]), str(res[0][1])
+
+
+@anvil.server.callable
+def add_buchung(buchung_info):
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
+  cursor = conn.cursor()
+  cursor.execute(
+    '''
+    INSERT INTO tblBuchung
+    (Startzeit, Endzeit, fkZimmer)
+    VALUES (?,?,?)
+    ''', 
+    (buchung_info[3],buchung_info[4],buchung_info[2])
+    )
+  res = cursor.execute('''
+  SELECT MAX(IDBuchung) AS LastID
+  FROM tblBuchung
+  '''
+    )
+  idBuchung = cursor.fetchone()[0]
+  cursor.execute(
+      '''
+      INSERT INTO tblBuchungBenutzer
+      (IDBenutzer, IDBuchung, Benutzerrolle)
+      VALUES (?,?,?)
+      ''',
+    (buchung_info[0], idBuchung, 'Ersteller')
+      )
+  for element in buchung_info[5]:
+    cursor.execute(
+      '''
+      INSERT INTO tblBuchungBenutzer
+      (IDBenutzer, IDBuchung, Benutzerrolle)
+      VALUES (?,?,?)
+      ''',
+      (element,idBuchung,'Mitbucher')
+      )
+  conn.close()
