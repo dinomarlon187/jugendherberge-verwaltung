@@ -37,16 +37,14 @@ def get_all_users():
   return res
 
 @anvil.server.callable
-def get_preiskategorien(UID):
+def get_preiskategorien():
   conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
   res = list(cursor.execute(
       '''
       SELECT Preis || "€" AS label, IDPreiskategorie
       FROM tblPreiskategorie 
-      WHERE IDPreiskategorie = ?
-      ''', 
-      (UID)
+      '''
   ))
   print(res)
   return res
