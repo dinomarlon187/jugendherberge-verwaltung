@@ -31,7 +31,7 @@ class Startseite(StartseiteTemplate):
     anvil.server.call('save_preiskategorie',self.dropdown_preiskategorie.selected_value, self.dropdown_user.selected_value)
 
   def dropdown_user_change(self, **event_args):
-    pass
+    self.dropdown_preiskategorie.selected_value = anvil.server.call('get_preiskategorie_for_user', self.dropdown_user.selected_value)
 
   def button_AddUser_click(self, **event_args):
     text, id = anvil.server.call('get_user', self.dropdown_mitbucher.selected_value)
@@ -61,6 +61,7 @@ class Startseite(StartseiteTemplate):
     else:
       buchungsinfo = self.get_buchung_info()
       anvil.server.call('add_buchung',buchungsinfo)
+      self.resetAll()
 
   def date_picker_start_change(self, **event_args):
     self.date_picker_end.min_date = self.date_picker_start.date
@@ -75,8 +76,12 @@ class Startseite(StartseiteTemplate):
     for component in self.flowpanel_additionalUser.get_components():
       additional_UserID.append(component.tag)
     return [userID,jugendherbergeID,zimmerID,start_date,end_date,additional_UserID]
+  def resetAll(self):
+    for component in self.flowpanel_additionalUser.get_components():
+      component.remove_from_parent()
+    self.date_picker_end.date = None
+    self.date_picker_start.date = None
     
-      
       
     
   

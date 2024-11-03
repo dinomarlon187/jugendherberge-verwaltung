@@ -48,15 +48,16 @@ def get_preiskategorien():
   ))
   print(res)
   return res
+  
 @anvil.server.callable
 def get_preiskategorie_for_user(ID):
   conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
   res = list(cursor.execute(
       '''
-      SELECT IDPreiskategorie
-      FROM tblPreiskategorie 
-      WHERE IDPreiskategorie = ?
+      SELECT fkPreiskategorie
+      FROM  tblBenutzer
+      WHERE IDBenutzer = ?
       ''',
     (str(ID))
     
@@ -81,7 +82,7 @@ def get_zimmer_for_jugendherberge(JID, PK_current):
 
 @anvil.server.callable
 def save_preiskategorie(PID,UserID):
-  # theoretisch speichert er die neue Preiskategorie hier ab, aber shit not working
+  # theoretisch speichert er die neue Preiskategorie hier als Standart ab, aber shit not working
   conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
   cursor.execute(
