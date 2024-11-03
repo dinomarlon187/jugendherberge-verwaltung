@@ -30,7 +30,7 @@ def get_all_users(ID=0):
   res = list(cursor.execute(
       '''
       SELECT Vorname || " " || Nachname || " " || Email AS label, IDBenutzer
-      FROM tblBenutzer WHERE IDBenutzer != ?
+      FROM tblBenutzer WHERE IDBenutzer != ?;
       ''',
       (str(ID))
   )) 
@@ -43,7 +43,7 @@ def get_preiskategorien():
   res = list(cursor.execute(
       '''
       SELECT Preis || "€" AS label, IDPreiskategorie
-      FROM tblPreiskategorie 
+      FROM tblPreiskategorie;
       '''
   ))
   print(res)
@@ -57,7 +57,7 @@ def get_preiskategorie_for_user(ID):
       '''
       SELECT fkPreiskategorie
       FROM  tblBenutzer
-      WHERE IDBenutzer = ?
+      WHERE IDBenutzer = ?;
       ''',
     (str(ID))
     
@@ -74,7 +74,7 @@ def get_zimmer_for_jugendherberge(JID, PK_current):
       '''
       SELECT "NR: " || IDZimmer || " Plätze: " || MaxBettenanzahl AS label, IDZimmer 
       FROM tblZimmer 
-      WHERE fkJugendherberge = ? AND fkPreiskategorie = ?
+      WHERE fkJugendherberge = ? AND fkPreiskategorie = ?;
       ''', 
       (str(JID), str(PK_current))
   ))
@@ -89,7 +89,7 @@ def save_preiskategorie(PID,UserID):
       '''
       UPDATE tblBenutzer
       SET fkPreiskategorie = ?
-      WHERE IDBenutzer = ?
+      WHERE IDBenutzer = ?;
       ''', 
       (PID, UserID)
   )
@@ -101,7 +101,7 @@ def get_user(ID):
     '''
     SELECT Vorname || " " || Nachname, IDBenutzer
     FROM tblBenutzer
-    WHERE IDBenutzer = ?
+    WHERE IDBenutzer = ?;
     ''', 
     (str(ID))
     ))
@@ -117,31 +117,55 @@ def add_buchung(buchung_info):
     '''
     INSERT INTO tblBuchung
     (Startzeit, Endzeit, fkZimmer)
-    VALUES (?,?,?)
+    VALUES (?,?,?);
     ''', 
     (buchung_info[3],buchung_info[4],buchung_info[2])
-    )
+  )
+  conn.commit()
   res = cursor.execute('''
   SELECT MAX(IDBuchung) AS LastID
-  FROM tblBuchung
+  FROM tblBuchung;
   '''
-    )
+  )
+  conn.commit()
   idBuchung = cursor.fetchone()[0]
   cursor.execute(
       '''
       INSERT INTO tblBuchungBenutzer
       (IDBenutzer, IDBuchung, Benutzerrolle)
-      VALUES (?,?,?)
+      VALUES (?,?,?);
       ''',
     (buchung_info[0], idBuchung, 'Ersteller')
-      )
+  )
+  conn.commit()
   for element in buchung_info[5]:
     cursor.execute(
       '''
       INSERT INTO tblBuchungBenutzer
       (IDBenutzer, IDBuchung, Benutzerrolle)
-      VALUES (?,?,?)
+      VALUES (?,?,?);
       ''',
       (element,idBuchung,'Mitbucher')
       )
+    conn.commit()
   conn.close()
+
+@anvil.server.callable
+def get_data():
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
+  cursor = conn.cursor()
+  test = list(cursor.execute(
+    '''
+    SELECT * FROM tblBuchung;
+    '''
+  ))
+  print(test)
+  data = list(cursor.execute(
+    '''
+    SELECT * FROM view_benutzerBuchung;
+    '''
+  ))
+  print('HAHAHAHAHAHAH', data)
+  conn.commit()
+  conn.close()
+  return data

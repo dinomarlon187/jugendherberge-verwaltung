@@ -5,7 +5,9 @@ unique_ids:
   forms:
     Startseite: L6ARUKCMRQCKSA7TX4FPBHVBNYAMSG5J
     Startseite.ItemTemplate1: '1729675932902689274454249.2156'
+    Startseite.ItemTemplate2: '173065440917615593022944.025093'
     Startseite.RowTemplate1: '1729073546360452996682186.6367'
+    Startseite.RowTemplate2: '1730656147127271389901761.3699'
   modules: {}
   scripts: {}
   server_modules:

@@ -21,6 +21,9 @@ class Startseite(StartseiteTemplate):
     self.dropdown_zimmer.items = anvil.server.call('get_zimmer_for_jugendherberge',self.dropdown_jugendherberge.selected_value, self.dropdown_preiskategorie.selected_value)
     self.dropdown_mitbucher.items = anvil.server.call('get_all_users',self.dropdown_user.selected_value)
     self.dropdown_jugendherberge.items = anvil.server.call('get_jugendherbergen')
+    self.display_booking()
+    self.dropdown_preiskategorie.selected_value = anvil.server.call('get_preiskategorie_for_user', self.dropdown_user.selected_value)
+    
 
   
   def dropdown_jugendherberge_change(self, **event_args):
@@ -62,6 +65,7 @@ class Startseite(StartseiteTemplate):
       buchungsinfo = self.get_buchung_info()
       anvil.server.call('add_buchung',buchungsinfo)
       self.resetAll()
+      self.display_booking()
 
   def date_picker_start_change(self, **event_args):
     self.date_picker_end.min_date = self.date_picker_start.date
@@ -76,11 +80,20 @@ class Startseite(StartseiteTemplate):
     for component in self.flowpanel_additionalUser.get_components():
       additional_UserID.append(component.tag)
     return [userID,jugendherbergeID,zimmerID,start_date,end_date,additional_UserID]
+    
   def resetAll(self):
     for component in self.flowpanel_additionalUser.get_components():
       component.remove_from_parent()
     self.date_picker_end.date = None
     self.date_picker_start.date = None
+
+  def display_booking(self):
+    self.repeating_panel_1.items = None
+    data = anvil.server.call('get_data')
+    add_list = []
+    for i in data:
+      add_list.append({'column_1': i[0],'column_2': i[1], 'column_3': i[2], 'column_4': i[3], 'column_5': i[4], 'column_6': i[5],})
+    self.repeating_panel_1.items = add_list
     
       
     
