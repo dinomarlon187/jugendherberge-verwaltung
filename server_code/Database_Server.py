@@ -93,6 +93,8 @@ def save_preiskategorie(PID,UserID):
       ''', 
       (PID, UserID)
   )
+  conn.commit()
+  conn.close()
 @anvil.server.callable
 def get_user(ID):
   conn = sqlite3.connect(data_files['buchungsdatenbank.db'])

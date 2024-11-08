@@ -4,6 +4,7 @@ import anvil.tables as tables
 import anvil.tables.query as q
 from anvil.tables import app_tables
 import anvil.server
+import datetime
 
 
 class Startseite(StartseiteTemplate):
@@ -23,6 +24,9 @@ class Startseite(StartseiteTemplate):
     self.dropdown_jugendherberge.items = anvil.server.call('get_jugendherbergen')
     self.display_booking()
     self.dropdown_preiskategorie.selected_value = anvil.server.call('get_preiskategorie_for_user', self.dropdown_user.selected_value)
+    self.date_picker_start.min_date = datetime.date.today()
+    self.date_picker_end.min_date = datetime.date.today()
+    
     
 
   
@@ -50,7 +54,7 @@ class Startseite(StartseiteTemplate):
     if text not in [component.text for component in self.flowpanel_additionalUser.get_components()]:
       self.flowpanel_additionalUser.add_component(name)
     else:
-      print(f"{text} is already added.")  # Optionally, notify that the item is already added
+      print(f"{text} is already added.")  
     
   def delete(self,**k):
     print("clicked by :",k['sender'].text)
@@ -74,6 +78,7 @@ class Startseite(StartseiteTemplate):
     userID = self.dropdown_user.selected_value
     jugendherbergeID = self.dropdown_jugendherberge.selected_value
     zimmerID = self.dropdown_zimmer.selected_value
+    
     start_date = self.date_picker_start.date
     end_date = self.date_picker_end.date
     additional_UserID = []
