@@ -60,7 +60,7 @@ class Startseite(StartseiteTemplate):
     k['sender'].remove_from_parent()
 
   def button_buchung_click(self, **event_args):
-    if (self.date_picker_end.date == None or self.date_picker_start.date == None ):
+    if (self.date_picker_end.date == None or self.date_picker_start.date == None or self.dropdown_zimmer.selected_value == None):
       print("Nicht alle Felder ausgefüllt")
     elif (anvil.server.call('check_dates',self.date_picker_start.date, self.date_picker_end.date,self.dropdown_zimmer.selected_value)):
       print("Dieses Zimmer ist zu diesem Datum schon besetzt. Bitte wähle einen anderen Zeitraum aus.")
