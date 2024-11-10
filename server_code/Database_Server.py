@@ -25,7 +25,6 @@ def get_jugendherbergen():
 
 @anvil.server.callable
 def get_all_users(ID=0):
-  print(ID, "Hallo")
   conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
   res = list(cursor.execute(
@@ -47,7 +46,6 @@ def get_preiskategorien():
       FROM tblPreiskategorie;
       '''
   ))
-  print(res)
   return res
   
 @anvil.server.callable
@@ -64,7 +62,6 @@ def get_preiskategorie_for_user(ID):
     
   ))
   item = res[0][0]
-  print(item)
   return item
   
 @anvil.server.callable
@@ -162,7 +159,6 @@ def get_data():
     SELECT * FROM tblBuchung;
     '''
   ))
-  print(test)
   data = list(cursor.execute(
     '''
     SELECT * FROM view_benutzerBuchung;
@@ -184,19 +180,20 @@ def get_maxBeds(ID):
   return res[0][0]
 
 @anvil.server.callable
-def check_date(start_date,end_date, IDZimmer):
+def check_dates(start_date,end_date, IDZimmer):
   conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
   cursor = conn.cursor()
   res = list(cursor.execute(
     '''
-    SELECT Startzeit,Endzeit FROM tblBuchung WHERE fkZimmer = IDZimmer;
-    '''
+    SELECT Startzeit,Endzeit FROM tblBuchung WHERE fkZimmer = ?;
+    ''', str(IDZimmer)
   ))
   for item in res:
-    is_start_in_range = item[0] <= start_date <= item[1]
-    is_end_in_range = item[0] <= end_date <= item[1]
+    range_start = datetime.strptime(item[0], "%Y-%m-%d").date()
+    range_end = datetime.strptime(item[1],"%Y-%m-%d").date()
+    is_start_in_range = range_start <= start_date <= range_end
+    is_end_in_range = range_start <= end_date <= range_end
     if (is_start_in_range or is_end_in_range):
       return True
-    else:
-      return False
+  return False
   
