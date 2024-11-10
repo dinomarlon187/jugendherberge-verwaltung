@@ -50,20 +50,21 @@ class Startseite(StartseiteTemplate):
     name.border="1px solid #888"
     name.set_event_handler("click",self.delete)
     name.tag = id
-    
-    if text not in [component.text for component in self.flowpanel_additionalUser.get_components()]:
+    if text not in [component.text for component in self.flowpanel_additionalUser.get_components()] and len(self.flowpanel_additionalUser.get_components()) < anvil.server.call('get_maxBeds', int(self.dropdown_zimmer.selected_value))-1:
       self.flowpanel_additionalUser.add_component(name)
     else:
-      print(f"{text} is already added.")  
+      print("Nope, geht nicht.")  
     
   def delete(self,**k):
     print("clicked by :",k['sender'].text)
     k['sender'].remove_from_parent()
 
   def button_buchung_click(self, **event_args):
-    if (self.date_picker_end.date == None or self.date_picker_start.date == None):
+    if (self.date_picker_end.date == None or self.date_picker_start.date == None ):
       print("Nicht alle Felder ausgefüllt")
-    elif (self.date_picker_end.date == self.date_picker_start.date):
+    elif (anvil.server.call('check_dates',self.date_picker_start.date, self.date_picker_end.date,self.dropdown_zimmer.selected_value)):
+      print("Dieses Zimmer ist zu diesem Datum schon besetzt. Bitte wähle einen anderen Zeitraum aus.")
+    elif (self.date_picker_end.date == self.date_picker_start.date ):
       print("Netter Versuch!")
     else:
       buchungsinfo = self.get_buchung_info()

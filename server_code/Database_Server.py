@@ -5,6 +5,7 @@ import anvil.files
 from anvil.files import data_files
 import anvil.server
 import sqlite3
+from datetime import datetime
 
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
@@ -107,7 +108,7 @@ def get_user(ID):
     ''', 
     (str(ID))
     ))
-  print(res[0][0])
+
   return str(res[0][0]), str(res[0][1])
 
 
@@ -167,7 +168,35 @@ def get_data():
     SELECT * FROM view_benutzerBuchung;
     '''
   ))
-  print('HAHAHAHAHAHAH', data)
   conn.commit()
   conn.close()
   return data
+
+@anvil.server.callable
+def get_maxBeds(ID):
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
+  cursor = conn.cursor()
+  res = list(cursor.execute(
+  '''
+  SELECT MaxBettenAnzahl FROM tblZimmer WHERE IDZimmer = ?;
+  ''', (str(ID))
+  ))
+  return res[0][0]
+
+@anvil.server.callable
+def check_date(start_date,end_date, IDZimmer):
+  conn = sqlite3.connect(data_files['buchungsdatenbank.db'])
+  cursor = conn.cursor()
+  res = list(cursor.execute(
+    '''
+    SELECT Startzeit,Endzeit FROM tblBuchung WHERE fkZimmer = IDZimmer;
+    '''
+  ))
+  for item in res:
+    is_start_in_range = item[0] <= start_date <= item[1]
+    is_end_in_range = item[0] <= end_date <= item[1]
+    if (is_start_in_range or is_end_in_range):
+      return True
+    else:
+      return False
+  
