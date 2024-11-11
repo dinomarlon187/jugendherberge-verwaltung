@@ -92,7 +92,7 @@ class Startseite(StartseiteTemplate):
       component.remove_from_parent()
     self.date_picker_end.date = None
     self.date_picker_start.date = None
-
+  
   def display_booking(self):
     self.repeating_panel_1.items = None
     data = anvil.server.call('get_data')
